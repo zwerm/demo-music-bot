@@ -1,0 +1,57 @@
+@import "custom";
+@import "~bootstrap/scss/bootstrap";
+
+body {
+    background-color: black;
+}
+
+main {
+    max-width: 50vmin;
+    max-height: 70vmin;
+    margin: 15vh auto;
+}
+
+.speech-bubble {
+    position: relative;
+    background: #00aabb;
+    border-radius: .4em;
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border: 1.25em solid transparent;
+        border-top-color: #00aabb;
+        border-bottom: 0;
+        margin-left: -1.25em;
+        margin-bottom: -1.25em;
+    }
+    &.bot {
+        background: #ffffff;
+        &::after {
+            left: 0;
+            top: 50%;
+            border: 1.25em solid transparent;
+            border-right-color: #ffffff;
+            border-left: 0;
+            border-top: 0;
+            margin-top: -0.625em;
+            margin-left: -1.25em;
+        }
+    }
+    &.user {
+        background: #ffffff;
+        &::after {
+            right: 0;
+            top: 50%;
+            border: 1.25em solid transparent;
+            border-left-color: #ffffff;
+            border-right: 0;
+            border-bottom: 0;
+            margin-top: -0.625em;
+            margin-right: -1.25em;
+        }
+    }
+}

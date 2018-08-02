@@ -1,1 +1,1 @@
-# demo-music-bot
+# Music bot demo
