@@ -1,4 +1,5 @@
 const BSClientLeaf = require('@zwerm/composite-bs-client/leafs/BSClientLeaf');
+const $ = require('jquery');
 const { DateTime } = require('luxon');
 
 /**
@@ -21,6 +22,14 @@ class Renderer extends BSClientLeaf {
     }
 
     /**
+     *
+     * @return {HTMLElement}
+     */
+    get messageArea() {
+        return this._messageArea;
+    }
+
+    /**
      * @inheritDoc
      *
      * @param {BotSocket.Protocol.Messages.RenderLetterData} renderLetterData
@@ -38,8 +47,6 @@ class Renderer extends BSClientLeaf {
      * @param {boolean} fromUser
      */
     renderMessage(message, fromUser) {
-        $(this._messageArea).children(`.${senderClassification}-message.typing-message:last`).remove();
-
         switch (message.type) {
             case 'typing':
                 this.renderTypingMessage((/** @type {StaMP.Protocol.TypingMessage}*/ message).state, fromUser);
@@ -64,32 +71,19 @@ class Renderer extends BSClientLeaf {
      * @param {boolean} fromUser
      */
     renderTypingMessage(state, fromUser) {
-        const timestamp = DateTime.local().toISO();
+        const typingClass = 'typing';
 
         /** @type {jQuery|JQuery} */
-        const $chatArea = $(this._messageArea);
+        const $messageArea = $(this.messageArea);
 
-        const $lastTypingMessage = $chatArea.children(`.${senderClassification}-message.typing-message:last`);
-
-        if (state === 'on' && $lastTypingMessage.empty()) {
-            $($chatArea)
-                .append(
-                    $('<div>')
-                        .addClass(`${senderClassification}-message`)
-                        .addClass('chat-message')
-                        .addClass('typing-message')
-                        .attr('title', `${senderClassification === 'user' ? 'sent' : 'received'} at ${timestamp}`)
-                        .data({ from: senderClassification, timestamp })
-                        .append($('<span>'))
-                        .append($('<span>'))
-                        .append($('<span>'))
-                        .hide()
-                        .fadeIn(100)
-                );
+        if (!fromUser && state === 'on' && !$messageArea.hasClass(typingClass)) {
+            $messageArea.addClass(typingClass);
         }
 
         if (state === 'off') {
-            $lastTypingMessage.remove();
+            $messageArea.one('animationiteration webkitAnimationIteration', function () {
+                $(this).removeClass(typingClass);
+            });
         }
     };
 
@@ -99,20 +93,18 @@ class Renderer extends BSClientLeaf {
      * @param {boolean} fromUser
      */
     renderTextMessage(text, fromUser) {
+        /** @type {jQuery|JQuery} */
+        const $messageArea = $(this.messageArea).find('.conversation').first();
         const timestamp = DateTime.local().toISO();
 
-        $(this._messageArea)
-            .append(
-                $('<div>')
-                    .addClass(`${senderClassification}-message`)
-                    .addClass(`chat-message`)
-                    .addClass('text-message')
-                    .attr('title', `${senderClassification === 'user' ? 'sent' : 'received'} at ${timestamp}`)
-                    .data({ from: senderClassification, timestamp })
-                    .text(text)
-                    .hide()
-                    .fadeIn(100)
-            );
+        $messageArea.prepend(
+            $('<div class="speech-bubble">')
+                .addClass('speech-bubble')
+                .addClass(fromUser ? 'user' : 'bot')
+                .text(text)
+                .hide()
+                .fadeIn(100)
+        );
     };
 
     /**

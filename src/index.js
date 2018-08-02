@@ -34,5 +34,5 @@ ZwermChatClient
     .registerLeaf(new EmitStatusMessageEventsLeaf(Emitter))
     .registerLeaf(new AutoReconnectLeaf(Emitter))
     .registerLeaf(new SendEventOnHandshakeLeaf('zwerm.welcome'))
-    .registerLeaf(new Renderer(MessageArea, DateTime))
+    .registerLeaf(new Renderer(MessageArea))
     .connect();

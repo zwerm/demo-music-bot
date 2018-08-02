@@ -3,18 +3,88 @@
 
 body {
     background-color: black;
+    display: block !important;
 }
 
 main {
-    max-width: 50vmin;
-    max-height: 70vmin;
+    max-width: 70vw;
+    max-height: 70vh;
     margin: 15vh auto;
+
+    section#messages {
+        margin-bottom: 5em;
+        height: calc(70vh - 5em);
+
+        .conversation {
+            display: flex;
+            flex-direction: column-reverse;
+            height: 100%;
+            overflow: hidden;
+            margin: -1.25em;
+            padding: 1.25em;
+
+            & :not(:nth-child(-n+3)) {
+                opacity: 0.8;
+            }
+            & :not(:nth-child(-n+4)) {
+                opacity: 0.6;
+            }
+            & :not(:nth-child(-n+5)) {
+                opacity: 0.4;
+            }
+            & :not(:nth-child(-n+6)) {
+                opacity: 0.2;
+            }
+            & :not(:nth-child(-n+7)) {
+                opacity: 0;
+            }
+        }
+
+        svg {
+            position: absolute;
+            left: calc(50vw - 25vmin);
+            width: 50vmin;
+            height: 50vmin;
+            margin: auto;
+        }
+
+        // Display bot typing
+        &.typing {
+            svg {
+                animation-name: typing;
+                animation-duration: 2500ms;
+                animation-iteration-count: infinite;
+                animation-timing-function: linear;
+                transform-origin: 50% 50%;
+                display: inline-block;
+            }
+            @keyframes typing {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        }
+    }
+
+    #composer {
+        height: 5em;
+    }
 }
 
 .speech-bubble {
     position: relative;
     background: #00aabb;
     border-radius: .4em;
+    padding: 1em;
+    max-width: 80%;
+
+    & + .speech-bubble {
+        margin-bottom: 2em;
+    }
+
     &::after {
         content: '';
         position: absolute;
@@ -29,12 +99,12 @@ main {
         margin-bottom: -1.25em;
     }
     &.bot {
-        background: #ffffff;
+        margin-right: auto;
         &::after {
             left: 0;
             top: 50%;
             border: 1.25em solid transparent;
-            border-right-color: #ffffff;
+            border-right-color: #00aabb;
             border-left: 0;
             border-top: 0;
             margin-top: -0.625em;
@@ -43,9 +113,12 @@ main {
     }
     &.user {
         background: #ffffff;
+        margin-left: auto;
         &::after {
             right: 0;
             top: 50%;
+            bottom: auto;
+            left: auto;
             border: 1.25em solid transparent;
             border-left-color: #ffffff;
             border-right: 0;
