@@ -33,7 +33,6 @@ ZwermChatClient
     .registerLeaf(new SessionStorageUserIdLeaf())
     .registerLeaf(new ToggleDisabledOnConnectLeaf(Composer.querySelector('input')))
     .registerLeaf(new SendInputQueryOnFormSubmitLeaf(Composer, Composer.querySelector('input')))
-    .registerLeaf(new ScrollToBottomOnLetterLeaf(MessageArea.querySelector('.conversation')))
     .registerLeaf(new EmitStatusMessageEventsLeaf(Emitter))
     .registerLeaf(new AutoReconnectLeaf(Emitter))
     .registerLeaf(new GroupCards())

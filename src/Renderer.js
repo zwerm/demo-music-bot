@@ -40,9 +40,18 @@ class Renderer extends AbstractRendererLeaf {
      */
     processRenderLetterRequest(renderLetterData) {
         renderLetterData.letter.forEach(message => this.renderMessage(message, (message.from || 'server').startsWith('user')));
+        this._scrollToPosition(this.messageArea.querySelector('.conversation').scrollHeight);
     }
 
-    // region message rendering
+    /**
+     * @inheritDoc
+     */
+    postHandshake() {
+        super.postHandshake();
+        this._scrollToPosition(this.messageArea.querySelector('.conversation').scrollHeight, 'instant');
+    }
+
+// region message rendering
     /**
      *
      * @param {StaMP.Protocol.Messages.StaMPMessage} message
@@ -109,9 +118,9 @@ class Renderer extends AbstractRendererLeaf {
                 .addClass('speech-bubble')
                 .attr('title', timestamp)
                 .html(linkifyString(text, { defaultProtocol: 'https' }))
-                .hide()
-                .fadeIn(100)
             )
+            .hide()
+            .fadeIn(100)
         );
     };
 
@@ -159,9 +168,10 @@ class Renderer extends AbstractRendererLeaf {
 
         // prepend the group
         $messageArea
-            .append($group)
-            .hide()
-            .fadeIn(100);
+            .append($group
+                .hide()
+                .fadeIn(100)
+            );
     }
 
 
@@ -175,6 +185,21 @@ class Renderer extends AbstractRendererLeaf {
     }
 
     // endregion
+
+    /**
+     * Scrolls this `Leaf`s `scrollElement` to the given `position`.
+     *
+     * @param {number} position the position in pixels to scroll the elements top to.
+     * @param {'auto'|'instant'|'smooth'} behaviour the scroll behaviour.
+     *
+     * @protected
+     */
+    _scrollToPosition(position, behaviour = 'smooth') {
+        this.messageArea.querySelector('.conversation').scrollTo({
+            top: position,
+            behavior: behaviour
+        });
+    }
 }
 
 module.exports = Renderer;

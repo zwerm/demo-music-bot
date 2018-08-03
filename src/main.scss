@@ -57,11 +57,11 @@ main {
     overflow: hidden;
     padding: 1.25em;
     width: 100%;
+    max-height: 100%;
 
     & :not(:nth-last-child(-n+5)) {
         opacity: 0;
         transition: opacity .5s linear;
-        display: none;
     }
 }
 
