@@ -181,7 +181,7 @@ class Renderer extends AbstractRendererLeaf {
      * @param {boolean} fromUser
      */
     renderImageMessage(url, fromUser) {
-        const timestamp = DateTime.local().toISO();
+        this.renderTextMessage(url, fromUser);
     }
 
     // endregion
