@@ -14,20 +14,7 @@ main {
     section#messages {
         margin-bottom: 5em;
         height: calc(70vh - 5em);
-
-        .conversation {
-            display: flex;
-            flex-direction: column-reverse;
-            height: 100%;
-            overflow: hidden;
-            margin: -1.25em;
-            padding: 1.25em;
-
-            & :not(:nth-child(-n+5)) {
-                opacity: 0;
-                transition: opacity .5s linear;
-            }
-        }
+        position: relative;
 
         svg {
             position: absolute;
@@ -63,17 +50,45 @@ main {
     }
 }
 
+/** Conversation **/
+.conversation {
+    position: absolute;
+    bottom: 0;
+    overflow: hidden;
+    padding: 1.25em;
+    width: 100%;
+
+    & :not(:nth-last-child(-n+5)) {
+        opacity: 0;
+        transition: opacity .5s linear;
+        display: none;
+    }
+}
+
+/** Generic messages **/
+.message {
+    max-width: 80%;
+    &.bot {
+        margin-right: auto;
+        text-align: left;
+    }
+    &.user {
+        margin-left: auto;
+        text-align: right;
+    }
+    & + .message {
+        margin-top: 2em;
+    }
+}
+
 /** Speech bubbles **/
+
 .speech-bubble {
     position: relative;
     background: #00aabb;
     border-radius: .4em;
     padding: 1em;
-    max-width: 80%;
-
-    & + .speech-bubble {
-        margin-bottom: 2em;
-    }
+    display: inline-block;
 
     &::after {
         content: '';
@@ -88,8 +103,10 @@ main {
         margin-left: -1.25em;
         margin-bottom: -1.25em;
     }
-    &.bot {
-        margin-right: auto;
+}
+
+.message {
+    &.bot .speech-bubble {
         &::after {
             left: 0;
             top: 50%;
@@ -101,9 +118,8 @@ main {
             margin-left: -1.25em;
         }
     }
-    &.user {
+    &.user .speech-bubble {
         background: #ffffff;
-        margin-left: auto;
         &::after {
             right: 0;
             top: 50%;
@@ -115,6 +131,35 @@ main {
             border-bottom: 0;
             margin-top: -0.625em;
             margin-right: -1.25em;
+        }
+    }
+}
+
+.message.cards {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+
+    .card-wrap {
+        display: inline-block;
+        width: 100%;
+        padding-right: 10px;
+        box-sizing: content-box;
+
+        &:last-child {
+            padding-right: 0;
+        }
+
+        @include make-col(12);
+        @include media-breakpoint-up(sm) {
+            width: calc((100% - 1 * 10px) / 2);
+        }
+        @include media-breakpoint-up(lg) {
+            width: calc((100% - 2 * 10px) / 3);
+        }
+        @include media-breakpoint-up(xl) {
+            width: calc((100% - 3 * 10px) / 4);
         }
     }
 }

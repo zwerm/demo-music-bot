@@ -102,14 +102,16 @@ class Renderer extends AbstractRendererLeaf {
         const $messageArea = $(this.messageArea).find('.conversation').first();
         const timestamp = DateTime.local().toISO();
 
-        $messageArea.prepend(
-            $('<div>')
+        $messageArea.append($('<div>')
+            .addClass('message')
+            .addClass(fromUser ? 'user' : 'bot')
+            .append($('<div>')
                 .addClass('speech-bubble')
-                .addClass(fromUser ? 'user' : 'bot')
                 .attr('title', timestamp)
                 .html(linkifyString(text, { defaultProtocol: 'https' }))
                 .hide()
                 .fadeIn(100)
+            )
         );
     };
 
@@ -123,18 +125,19 @@ class Renderer extends AbstractRendererLeaf {
         const $messageArea = $(this.messageArea).find('.conversation').first();
 
         /** @type {jQuery|JQuery} */
-        const $group = $('<div>').addClass('card-deck');
+        const $group = $('<div>').addClass('message cards');
 
         // Add cards to group
         cards.forEach(card => {
-            $group.append(
-                $('<div>')
-                    .addClass('card')
-                    .addClass(!fromUser ? 'bg-info text-white' : '')
-                    .css('max-width', '18rem')
-                    .append(card.imageUrl ? $(`<img src="${card.imageUrl}">`).attr('alt', card.title).addClass('card-img-top') : null)
-                    .append(
-                        $('<div>')
+                $group.append($('<div>')
+                    .addClass('card-wrap')
+                    .append($('<div>')
+                        .addClass('card')
+                        .addClass(!fromUser ? 'bg-info text-white' : '')
+                        .append($(`<img src="${card.imageUrl ? card.imageUrl : 'https://placehold.it/500x500.jpg'}">`)
+                            .attr('alt', card.title)
+                            .addClass('card-img-top'))
+                        .append($('<div>')
                             .addClass('card-body')
                             .append(card.title ? $('<h5>').addClass('card-title').text(card.title) : null)
                             .append(card.subtitle ? $('<h6>').addClass('card-subtitle mb-2 text-mute').text(card.subtitle) : null)
@@ -147,13 +150,14 @@ class Renderer extends AbstractRendererLeaf {
                                         this.bsClient.sendQuery(button.value, button.text);
                                     })
                             }))
-                    ))
-            ;
-        });
+                        ))
+                );
+            }
+        );
 
         // prepend the group
         $messageArea
-            .prepend($group)
+            .append($group)
             .hide()
             .fadeIn(100);
     }
