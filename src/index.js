@@ -13,6 +13,7 @@ const EmitStatusMessageEventsLeaf = require('@zwerm/composite-bs-client/leafs/Em
 const AutoReconnectLeaf = require('@zwerm/composite-bs-client/leafs/AutoReconnectLeaf');
 const SendEventOnFirstStart = require('./SendEventOnFirstStart');
 const SessionStorageArchiverLeaf = require('@zwerm/composite-bs-client/leafs/archiver/SessionStorageArchiverLeaf');
+const GroupCards = require('./GroupCards');
 const Renderer = require('./Renderer');
 
 // Set up some basic services
@@ -35,6 +36,7 @@ ZwermChatClient
     .registerLeaf(new ScrollToBottomOnLetterLeaf(MessageArea))
     .registerLeaf(new EmitStatusMessageEventsLeaf(Emitter))
     .registerLeaf(new AutoReconnectLeaf(Emitter))
+    .registerLeaf(new GroupCards())
     .registerLeaf(new SendEventOnFirstStart(ConversationStorage, 'zwerm.welcome'))
     .registerLeaf(ConversationStorage)
     .registerLeaf(new Renderer(MessageArea, ConversationStorage))

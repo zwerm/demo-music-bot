@@ -63,6 +63,7 @@ main {
     }
 }
 
+/** Speech bubbles **/
 .speech-bubble {
     position: relative;
     background: #00aabb;
@@ -117,3 +118,24 @@ main {
         }
     }
 }
+
+/** Cards **/
+//.card-deck, .card-group {
+//    @include make-row();
+//
+//    .card {
+//        @include make-col(12);
+//
+//        @include media-breakpoint-up(sm) {
+//            @include make-col(6);
+//        }
+//        @include media-breakpoint-up(md) {
+//            @include make-col(4);
+//        }
+//        @include media-breakpoint-up(xl) {
+//            @include make-col(3);
+//        }
+//    }
+//}
+//
+//

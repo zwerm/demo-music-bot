@@ -1,6 +1,7 @@
 const AbstractRendererLeaf = require('@zwerm/composite-bs-client/leafs/renderer/AbstractRendererLeaf');
 const $ = require('jquery');
 const { DateTime } = require('luxon');
+const linkifyString = require('linkifyjs/string');
 
 /**
  * A simple message renderer.
@@ -56,6 +57,9 @@ class Renderer extends AbstractRendererLeaf {
             case 'text':
                 this.renderTextMessage((/** @type {StaMP.Protocol.TextMessage}*/ message).text, fromUser);
                 break;
+            case 'card_group':
+                this.renderCardGroup((/** @type {{cards: Array<StaMP.Protocol.CardMessage>}}*/ message).cards, fromUser);
+                break;
             case 'card':
                 this.renderCardGroup((/** @type {Array<StaMP.Protocol.CardMessage>}*/ [message]), fromUser);
                 break;
@@ -103,7 +107,7 @@ class Renderer extends AbstractRendererLeaf {
                 .addClass('speech-bubble')
                 .addClass(fromUser ? 'user' : 'bot')
                 .attr('title', timestamp)
-                .text(text)
+                .html(linkifyString(text, { defaultProtocol: 'https' }))
                 .hide()
                 .fadeIn(100)
         );
@@ -134,8 +138,17 @@ class Renderer extends AbstractRendererLeaf {
                             .addClass('card-body')
                             .append(card.title ? $('<h5>').addClass('card-title').text(card.title) : null)
                             .append(card.subtitle ? $('<h6>').addClass('card-subtitle mb-2 text-mute').text(card.subtitle) : null)
-                    )
-            );
+                            .append(card.buttons.map(button => {
+                                return $('<a>')
+                                    .addClass('btn btn-sm btn-outline-light')
+                                    .attr('href', '#')
+                                    .text(button.text)
+                                    .on('click', () => {
+                                        this.bsClient.sendQuery(button.value, button.text);
+                                    })
+                            }))
+                    ))
+            ;
         });
 
         // prepend the group
