@@ -136,7 +136,8 @@ class Renderer extends AbstractRendererLeaf {
                         .addClass(!fromUser ? 'bg-info text-white' : '')
                         .append($(`<img src="${card.imageUrl ? card.imageUrl : 'https://placehold.it/500x500.jpg'}">`)
                             .attr('alt', card.title)
-                            .addClass('card-img-top'))
+                            .addClass('card-img-top')
+                        )
                         .append($('<div>')
                             .addClass('card-body')
                             .append(card.title ? $('<h5>').addClass('card-title').text(card.title) : null)
@@ -150,7 +151,8 @@ class Renderer extends AbstractRendererLeaf {
                                         this.bsClient.sendQuery(button.value, button.text);
                                     })
                             }))
-                        ))
+                        )
+                    )
                 );
             }
         );
