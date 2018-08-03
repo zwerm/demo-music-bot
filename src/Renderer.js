@@ -1,17 +1,18 @@
-const BSClientLeaf = require('@zwerm/composite-bs-client/leafs/BSClientLeaf');
+const AbstractRendererLeaf = require('@zwerm/composite-bs-client/leafs/renderer/AbstractRendererLeaf');
 const $ = require('jquery');
 const { DateTime } = require('luxon');
 
 /**
  * A simple message renderer.
  */
-class Renderer extends BSClientLeaf {
+class Renderer extends AbstractRendererLeaf {
     /**
      *
      * @param {HTMLElement} messageArea
+     * @param {?AbstractArchiverLeaf} [archiver=null] optional archiver to restore messages from upon handshaking with the server
      */
-    constructor(messageArea) {
-        super();
+    constructor(messageArea, archiver = null) {
+        super(archiver);
 
         /**
          *
