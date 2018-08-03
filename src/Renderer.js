@@ -56,7 +56,7 @@ class Renderer extends BSClientLeaf {
                 this.renderTextMessage((/** @type {StaMP.Protocol.TextMessage}*/ message).text, fromUser);
                 break;
             case 'card':
-                this.renderCardMessage((/** @type {StaMP.Protocol.CardMessage}*/ message), fromUser);
+                this.renderCardGroup((/** @type {Array<StaMP.Protocol.CardMessage>}*/ [message]), fromUser);
                 break;
             case 'image':
                 this.renderImageMessage((/** @type {StaMP.Protocol.ImageMessage}*/ message).url, fromUser);
@@ -98,9 +98,10 @@ class Renderer extends BSClientLeaf {
         const timestamp = DateTime.local().toISO();
 
         $messageArea.prepend(
-            $('<div class="speech-bubble">')
+            $('<div>')
                 .addClass('speech-bubble')
                 .addClass(fromUser ? 'user' : 'bot')
+                .attr('title', timestamp)
                 .text(text)
                 .hide()
                 .fadeIn(100)
@@ -109,51 +110,40 @@ class Renderer extends BSClientLeaf {
 
     /**
      *
-     * @param {StaMP.Protocol.CardMessage} card
+     * @param {Array<StaMP.Protocol.CardMessage>} cards
      * @param {boolean} fromUser
      */
-    renderCardMessage(card, fromUser) {
+    renderCardGroup(cards, fromUser) {
         /** @type {jQuery|JQuery} */
-        const $chatArea = $(this._messageArea);
-
-        if (!$chatArea.children(':last').hasClass('card-message')) {
-            const id = `${Date.now()}`;
-
-            $chatArea
-                .append(
-                    $('<div>')
-                        .attr('id', id)
-                        .addClass(`${senderClassification}-message`)
-                        .addClass(`chat-message`)
-                        .addClass(`card-message`)
-                        .addClass('carousel')
-                        .addClass('slide')
-                        .append($('<div>').addClass('carousel-inner'))
-                        .append(this.createCarouselControl(id, 'left', 'prev'))
-                        .append(this.createCarouselControl(id, 'right', 'next'))
-                        .hide()
-                        .fadeIn(250)
-                );
-
-            $(`#${id}`).carousel({ interval: false });
-        }
+        const $messageArea = $(this.messageArea).find('.conversation').first();
 
         /** @type {jQuery|JQuery} */
-        const $carouselInner = $chatArea.children(':last').children('.carousel-inner');
+        const $group = $('<div>').addClass('card-deck');
 
-        $carouselInner.append(this.createCard({
-            title: card.title,
-            subtitle: card.subtitle,
-            imageUrl: card.imageUrl,
-            buttons: card.buttons,
-            clickUrl: card.clickUrl
-        }, $carouselInner.children().length === 0));
+        // Add cards to group
+        cards.forEach(card => {
+            $group.append(
+                $('<div>')
+                    .addClass('card')
+                    .addClass(!fromUser ? 'bg-info text-white' : '')
+                    .css('max-width', '18rem')
+                    .append(card.imageUrl ? $(`<img src="${card.imageUrl}">`).attr('alt', card.title).addClass('card-img-top') : null)
+                    .append(
+                        $('<div>')
+                            .addClass('card-body')
+                            .append(card.title ? $('<h5>').addClass('card-title').text(card.title) : null)
+                            .append(card.subtitle ? $('<h6>').addClass('card-subtitle mb-2 text-mute').text(card.subtitle) : null)
+                    )
+            );
+        });
 
-        $chatArea
-            .children(':last')
-            .children('.carousel-control-prev, .carousel-control-next')
-            .toggleClass('invisible', $carouselInner.children().length === 1);
+        // prepend the group
+        $messageArea
+            .prepend($group)
+            .hide()
+            .fadeIn(100);
     }
+
 
     /**
      *
@@ -162,116 +152,7 @@ class Renderer extends BSClientLeaf {
      */
     renderImageMessage(url, fromUser) {
         const timestamp = DateTime.local().toISO();
-
-        $(this._messageArea)
-            .append(
-                $('<div>')
-                    .addClass(`${senderClassification}-message`)
-                    .addClass(`chat-message`)
-                    .addClass('image-message')
-                    .attr('title', `${senderClassification === 'user' ? 'sent' : 'received'} at ${timestamp}`)
-                    .data({ from: senderClassification, timestamp })
-                    .append(
-                        $(`<img src="${url}">`)
-                            .attr('src', url)
-                    )
-                    .hide()
-                    .fadeIn(250)
-            );
     }
-
-    // endregion
-    // region card messages
-    /**
-     *
-     * @param {{title: string, subtitle: string, imageUrl: string, buttons: [], clickUrl: string}} card
-     * @param {boolean} [active=false]
-     *
-     * @return {jQuery|JQuery}
-     */
-    createCard(card, active = false) {
-        const $title = card.title
-            ? $('<h4>')
-                .addClass('title')
-                .text(card.title)
-            : null;
-
-        const $subtitle = card.subtitle
-            ? $('<h6>')
-                .addClass('subtitle')
-                .text(card.subtitle)
-            : null;
-
-        const $img = card.imageUrl
-            ? $('<div>')
-                .addClass('image')
-                .css('height', '200px')
-                .css('background-image', `url(${card.imageUrl})`)
-                .css('background-size', 'cover')
-                .css('background-repeat', 'no-repeat')
-                .css('background-position', `50% 50%`)
-            : null;
-
-        const $buttons = card.buttons
-            ? card.buttons.map(/** LexRuntime.Button */button =>
-                $('<button>')
-                    .addClass('w-100')
-                    .addClass('btn')
-                    .addClass('btn-secondary')
-                    .addClass('card-button')
-                    .text(button.text)
-                    .data({ value: button.value })
-            ) : null;
-
-        const $buttonGroup = card.buttons
-            ? $('<div>')
-                .addClass('btn-group')
-                .addClass('w-100')
-                .append($buttons)
-                .on('click', '.card-button', clicked => this.bsClient.sendQuery($(clicked.target).data('value'), $(clicked.target).text()))
-            : null;
-
-        return $('<div>')
-            .addClass('carousel-item')
-            .addClass('chat-card')
-            .addClass(active ? 'active' : '')
-            .append(
-                $('<a>')
-                    .addClass('card-link')
-                    .attr('target', '_blank')
-                    .attr('href', card.clickUrl || null)
-                    .append($img)
-                    .append($title)
-                    .append($subtitle)
-            )
-            .append($buttonGroup);
-    };
-
-    /**
-     *
-     * @param {string} target
-     * @param {'left'|'right'|string} direction
-     * @param {'prev'|'next'} slide
-     *
-     * @returns {jQuery|JQuery}
-     */
-    createCarouselControl(target, direction, slide) {
-        return $('<div>')
-            .addClass(direction)
-            .addClass(`carousel-control-${slide}`)
-            .attr('role', 'button')
-            .data({ slide })
-            .append(
-                $('<span>')
-                    .addClass(`carousel-control-${slide}-icon`)
-            )
-            .append(
-                $('<span>')
-                    .addClass('sr-only')
-                    .text(slide)
-            )
-            .on('click', () => $(`#${target}`).carousel(slide));
-    };
 
     // endregion
 }

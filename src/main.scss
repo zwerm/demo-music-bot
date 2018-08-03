@@ -23,20 +23,9 @@ main {
             margin: -1.25em;
             padding: 1.25em;
 
-            & :not(:nth-child(-n+3)) {
-                opacity: 0.8;
-            }
-            & :not(:nth-child(-n+4)) {
-                opacity: 0.6;
-            }
             & :not(:nth-child(-n+5)) {
-                opacity: 0.4;
-            }
-            & :not(:nth-child(-n+6)) {
-                opacity: 0.2;
-            }
-            & :not(:nth-child(-n+7)) {
                 opacity: 0;
+                transition: opacity .5s linear;
             }
         }
 
