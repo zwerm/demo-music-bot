@@ -8,7 +8,6 @@ const ZwermChatClient = require('@zwerm/composite-bs-client/CompositeBSClient');
 const SessionStorageUserIdLeaf = require('@zwerm/composite-bs-client/leafs/userid/SessionStorageUserIdLeaf');
 const ToggleDisabledOnConnectLeaf = require('@zwerm/composite-bs-client/leafs/ToggleDisabledOnConnectLeaf');
 const SendInputQueryOnFormSubmitLeaf = require('@zwerm/composite-bs-client/leafs/SendInputQueryOnFormSubmitLeaf');
-const ScrollToBottomOnLetterLeaf = require('@zwerm/composite-bs-client/leafs/ScrollToBottomOnLetterLeaf');
 const EmitStatusMessageEventsLeaf = require('@zwerm/composite-bs-client/leafs/EmitStatusMessageEventsLeaf');
 const AutoReconnectLeaf = require('@zwerm/composite-bs-client/leafs/AutoReconnectLeaf');
 const SendEventOnFirstStart = require('./SendEventOnFirstStart');
