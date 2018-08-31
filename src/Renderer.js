@@ -2,6 +2,7 @@ const AbstractRendererLeaf = require('@zwerm/composite-bs-client/leafs/renderer/
 const $ = require('jquery');
 const { DateTime } = require('luxon');
 const linkifyString = require('linkifyjs/string');
+const StaMPBuilder = require('@stampit/stamp/MessageBuilder');
 
 /**
  * A simple message renderer.
@@ -74,6 +75,9 @@ class Renderer extends AbstractRendererLeaf {
                 break;
             case 'image':
                 this.renderImageMessage((/** @type {StaMP.Protocol.ImageMessage}*/ message).url, fromUser);
+                break;
+            case 'event':
+                this.renderEventMessage((/** @type {StaMP.Protocol.EventMessage}*/ message), fromUser);
                 break;
         }
     };
@@ -181,7 +185,7 @@ class Renderer extends AbstractRendererLeaf {
      * @param {boolean} fromUser
      */
     renderImageMessage(url, fromUser) {
-        this.renderTextMessage(url, fromUser);
+        this.renderCardGroup([StaMPBuilder.createCardMessage('', null, url)], fromUser);
     }
 
     // endregion
@@ -199,6 +203,15 @@ class Renderer extends AbstractRendererLeaf {
             top: position,
             behavior: behaviour
         });
+    }
+
+    /**
+     *
+     * @param {StaMP.Protocol.EventMessage} message
+     * @param {boolean} fromUser
+     */
+    renderEventMessage(message, fromUser) {
+        console.log(message);
     }
 }
 

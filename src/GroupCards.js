@@ -22,7 +22,7 @@ class GroupCards extends BSClientLeaf {
 
             // group already started
             const group = letter[letter.length - 1];
-            if ('card_group' === group.type && group.from === group.from) {
+            if (group && 'card_group' === group.type && group.from === group.from) {
                 (/** @type {{cards: Array<StaMP.Protocol.Messages.StaMPMessage>}} */group).cards.push(message);
 
                 return letter;
