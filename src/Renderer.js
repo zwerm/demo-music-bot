@@ -211,7 +211,31 @@ class Renderer extends AbstractRendererLeaf {
      * @param {boolean} fromUser
      */
     renderEventMessage(message, fromUser) {
-        console.log(message);
+        /** @type {jQuery|JQuery} */
+        const $messageArea = $(this.messageArea).find('.conversation').first();
+        const timestamp = DateTime.local().toISO();
+
+        // Spotify auth message
+        if (message.event === 'spotify.authorize') {
+            console.log(message);
+            const $authButton = $('<button type="button">')
+                .addClass('btn btn-primary')
+                .text('Login to Spotify')
+                .on('click', () => {
+                    window.open(message.payload.redirect, 'popup', 'height=600,width=500,toolbar=no');
+                });
+
+            $messageArea.append($('<div>')
+                .addClass('message')
+                .addClass(fromUser ? 'user' : 'bot')
+                .append($('<div>')
+                    .addClass('speech-bubble')
+                    .attr('title', timestamp)
+                    .append($authButton)
+                )
+                .hide()
+                .fadeIn(100));
+        }
     }
 }
 

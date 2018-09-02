@@ -22,7 +22,7 @@ const Emitter = new EventEmitter();
 const ConversationStorage = new SessionStorageArchiverLeaf(['render-letter']);
 
 // Build the client
-ZwermChatClient
+const client = ZwermChatClient
     .newForZwermChat(
         'wss://chat.zwerm.io',
         'acme',
@@ -39,3 +39,18 @@ ZwermChatClient
     .registerLeaf(ConversationStorage)
     .registerLeaf(new Renderer(MessageArea, ConversationStorage))
     .connect();
+
+// Send Spotify authorization event and close window if code is given
+const URL = require('url-parse');
+const location = new URL(window.location, window.location, true);
+if (location.query.code) {
+    Emitter.on(EmitStatusMessageEventsLeaf.E_STATUS_CONNECT, () => {
+        console.log('Authorizing Spotify...');
+        client.sendEvent('spotify.authorized', {
+            code: location.query.code
+        });
+        window.close();
+    });
+}
+
+
