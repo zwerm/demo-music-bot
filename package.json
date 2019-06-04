@@ -24,7 +24,7 @@
     "dependencies": {
         "@stampit/stamp": "^0.0.2",
         "@zwerm/composite-bs-client": "github:zwerm/composite-bs-client",
-        "bootstrap": "^4.1.3",
+        "bootstrap": "^4.3.1",
         "jquery": "^3.3.1",
         "linkifyjs": "^2.1.6",
         "luxon": "^1.3.3",
